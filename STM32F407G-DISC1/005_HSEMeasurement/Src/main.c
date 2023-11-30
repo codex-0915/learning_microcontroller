@@ -30,6 +30,21 @@
 
 int main(void)
 {
+	/* Initialize register addresses */
+	uint32_t *pRccCrReg = (uint32_t*) RCC_CFGR_REG_ADDR;
+	uint32_t *pRccCfgrReg = (uint32_t) RCC_CFGR_REG_ADDR;
+
+	/* Enable the HSE clock using HSEON bit */
+	*pRccCrReg |= (1 << 16);
+
+	/*
+	 * Wait until HSE clock from the external crystal
+	 * stabilizes (only if crystal is connected)
+	*/
+	while(!(*pRccCrReg & (1 << 17)));
+
+	/* Switch the system clock to HSE (RCC_CFGR) */
+	*pRccCfgrReg |= (1 << 0);
 
     /* Loop forever */
 	for(;;);
